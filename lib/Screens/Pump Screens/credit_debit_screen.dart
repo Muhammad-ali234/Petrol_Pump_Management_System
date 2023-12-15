@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:petrol_pump/Screens/Pump%20Screens/add_new_transaction.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 class CreditDebitScreen extends StatefulWidget {
   const CreditDebitScreen({Key? key}) : super(key: key);
@@ -37,30 +39,127 @@ class _CreditDebitScreenState extends State<CreditDebitScreen> {
           ),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const SizedBox(height: 16.0),
-          _buildTransactionList(),
-          const SizedBox(height: 16.0),
-          _buildTotalBalance(),
-          const SizedBox(height: 16.0),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const AddTransactionScreen()),
-              ).then((newTransaction) {
-                if (newTransaction != null) {
-                  _addTransaction(newTransaction);
-                }
-              });
-            },
-            child: const Text('Add New Transaction'),
-          ),
-        ],
+      body: ResponsiveBuilder(
+        builder: (context, sizingInformation) {
+          if (sizingInformation.isMobile) {
+            return _buildMobileLayout();
+          } else {
+            return _buildWebLayout();
+          }
+        },
       ),
+    );
+  }
+
+  Widget _buildMobileLayout() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const SizedBox(height: 16.0),
+        _buildTransactionList(),
+        const SizedBox(height: 16.0),
+        _buildTotalBalance(),
+        const SizedBox(height: 16.0),
+        ElevatedButton(
+          onPressed: () {
+            // Navigate to add transaction screen
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AddTransactionScreen(),
+              ),
+            ).then((newTransaction) {
+              if (newTransaction != null) {
+                _addTransaction(newTransaction);
+              }
+            });
+          },
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.blue,
+          ),
+          child: const Text('Add New Transaction'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildWebLayout() {
+    return Row(
+      children: [
+        // Sidebar
+        Container(
+          width: 250,
+          color: Colors.blue,
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Menu',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.blue,
+                  backgroundColor: Colors.white,
+                ),
+                child: const Text('Dashboard'),
+              ),
+              ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.blue,
+                  backgroundColor: Colors.white,
+                ),
+                child: const Text('Reports'),
+              ),
+            ],
+          ),
+        ),
+        // Main Content
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: 16.0),
+                _buildTransactionList(),
+                const SizedBox(height: 16.0),
+                _buildTotalBalance(),
+                const SizedBox(height: 16.0),
+                ElevatedButton(
+                  onPressed: () {
+                    // Navigate to add transaction screen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AddTransactionScreen(),
+                      ),
+                    ).then((newTransaction) {
+                      if (newTransaction != null) {
+                        _addTransaction(newTransaction);
+                      }
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.blue,
+                  ),
+                  child: const Text('Add New Transaction'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -77,7 +176,10 @@ class _CreditDebitScreenState extends State<CreditDebitScreen> {
           : ListView.builder(
               itemCount: transactions.length,
               itemBuilder: (context, index) {
-                return TransactionCard(transaction: transactions[index]);
+                return TransactionCard(
+                  transaction: transactions[index],
+                  onDelete: () => _deleteTransaction(index),
+                );
               },
             ),
     );
@@ -106,7 +208,7 @@ class _CreditDebitScreenState extends State<CreditDebitScreen> {
         children: [
           const Text(
             'Total Balance',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
           const SizedBox(height: 8.0),
           Text(
@@ -127,12 +229,20 @@ class _CreditDebitScreenState extends State<CreditDebitScreen> {
       transactions.add(newTransaction);
     });
   }
+
+  void _deleteTransaction(int index) {
+    setState(() {
+      transactions.removeAt(index);
+    });
+  }
 }
 
 class TransactionCard extends StatelessWidget {
   final Transaction transaction;
+  final VoidCallback onDelete;
 
-  const TransactionCard({Key? key, required this.transaction})
+  const TransactionCard(
+      {Key? key, required this.transaction, required this.onDelete})
       : super(key: key);
 
   @override
@@ -171,6 +281,13 @@ class TransactionCard extends StatelessWidget {
             ),
           ],
         ),
+        trailing: IconButton(
+          icon: const Icon(
+            Icons.delete,
+            color: Color.fromARGB(255, 250, 2, 2),
+          ),
+          onPressed: onDelete,
+        ),
       ),
     );
   }
@@ -190,19 +307,3 @@ class Transaction {
 }
 
 enum TransactionType { credit, debit }
-
-class AddTransactionScreen extends StatelessWidget {
-  const AddTransactionScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add New Transaction'),
-      ),
-      body: const Center(
-        child: Text('This is the Add Transaction Screen'),
-      ),
-    );
-  }
-}
