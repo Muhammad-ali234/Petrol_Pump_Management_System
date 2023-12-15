@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:petrol_pump/Screens/credit_debit_screen.dart';
-import 'package:petrol_pump/Screens/daily_expense%20screen.dart';
-import 'package:petrol_pump/Screens/dashboared_screen.dart';
-import 'package:petrol_pump/Screens/inventry_screen.dart';
-import 'package:petrol_pump/Screens/login_screen.dart';
-import 'package:petrol_pump/Screens/profit_sales_screen.dart';
+import 'package:petrol_pump/Screens/Pump%20Screens/credit_debit_screen.dart';
+import 'package:petrol_pump/Screens/Pump%20Screens/daily_expense%20screen.dart';
+import 'package:petrol_pump/Screens/Pump%20Screens/login_screen.dart';
+import 'package:petrol_pump/Screens/Pump%20Screens/pump_dashboared_screen.dart';
+
+import 'package:petrol_pump/Screens/Pump%20Screens/stocks_screen.dart';
+
 import 'package:petrol_pump/Screens/splash_screen.dart';
 
 void main() {
@@ -21,12 +22,12 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const SplashScreen(),
-        '/login': (context) => const AuthScreen(),
+        '/login': (context) => const LoginScreen(),
         '/dashboardScreen': (context) => const DashboardScreen(),
-        '/inventory': (context) => const InventoryScreen(),
+        '/stock': (context) => const StocksScreen(),
         '/credit_debit': (context) => const CreditDebitScreen(),
         '/daily_expense': (context) => const DailyExpenseScreen(),
-        '/profit_sales': (context) => const ProfitSalesScreen(),
+        //'/profit_sales': (context) =>  ProfitSalesScreen(petrolLiterPrice: null,),
       },
     );
   }

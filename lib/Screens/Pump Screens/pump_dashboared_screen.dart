@@ -12,78 +12,80 @@ class DashboardScreen extends StatelessWidget {
         title: const Text('Petrol Pump Station 1'),
       ),
       backgroundColor: const Color.fromARGB(255, 255, 251, 251),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Align(
-            alignment: Alignment.topLeft,
-            child: Expanded(
-              child: Card(
-                elevation: 15,
-                shadowColor: Colors.teal,
-                child: Image.asset(
-                  "assets/pump_station.jpg",
-                  fit: BoxFit.fitWidth,
-                  height: 200,
-                  width: double.infinity,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: Expanded(
+                child: Card(
+                  elevation: 15,
+                  shadowColor: Colors.teal,
+                  child: Image.asset(
+                    "assets/pump_station.jpg",
+                    fit: BoxFit.fitWidth,
+                    height: 200,
+                    width: double.infinity,
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          Center(
-            child: StaggeredGridView.count(
-              shrinkWrap: true,
-              crossAxisCount: 4,
-              mainAxisSpacing: 5.0,
-              crossAxisSpacing: 5.0,
-              padding: const EdgeInsets.all(16.0),
-              staggeredTiles: const [
-                StaggeredTile.fit(2),
-                StaggeredTile.fit(2),
-                StaggeredTile.fit(4),
-                StaggeredTile.fit(4),
-              ],
-              children: [
-                AnimatedDashboardCard(
-                  title: 'Inventory',
-                  value: '100 items',
-                  color: Colors.blue.shade400,
-                  onTap: () {
-                    Navigator.pushNamed(context, '/inventory');
-                  },
-                ),
-                AnimatedDashboardCard(
-                  title: 'Credit/Debit',
-                  value: '\$5,000',
-                  color: Colors.green.shade400,
-                  onTap: () {
-                    Navigator.pushNamed(context, '/credit_debit');
-                  },
-                ),
-                AnimatedDashboardCard(
-                  title: 'Daily Expense',
-                  value: '\$500',
-                  color: Colors.orange.shade400,
-                  onTap: () {
-                    Navigator.pushNamed(context, '/daily_expense');
-                  },
-                ),
-                AnimatedDashboardCard(
-                  title: 'Profit/Sales',
-                  value: '\$2,500',
-                  color: Colors.purple.shade400,
-                  onTap: () {
-                    Navigator.pushNamed(context, '/profit_sales');
-                  },
-                ),
-              ],
+            const SizedBox(
+              height: 30,
             ),
-          ),
-        ],
+            Center(
+              child: StaggeredGridView.count(
+                shrinkWrap: true,
+                crossAxisCount: 4,
+                mainAxisSpacing: 5.0,
+                crossAxisSpacing: 5.0,
+                padding: const EdgeInsets.all(16.0),
+                staggeredTiles: const [
+                  StaggeredTile.fit(2),
+                  StaggeredTile.fit(2),
+                  StaggeredTile.fit(4),
+                  StaggeredTile.fit(4),
+                ],
+                children: [
+                  AnimatedDashboardCard(
+                    title: 'Stocks',
+                    value: '100 items',
+                    color: Colors.blue.shade400,
+                    onTap: () {
+                      Navigator.pushNamed(context, '/stock');
+                    },
+                  ),
+                  AnimatedDashboardCard(
+                    title: 'Credit/Debit',
+                    value: '\$5,000',
+                    color: Colors.green.shade400,
+                    onTap: () {
+                      Navigator.pushNamed(context, '/credit_debit');
+                    },
+                  ),
+                  AnimatedDashboardCard(
+                    title: 'Daily Expense',
+                    value: '\$500',
+                    color: Colors.orange.shade400,
+                    onTap: () {
+                      Navigator.pushNamed(context, '/daily_expense');
+                    },
+                  ),
+                  AnimatedDashboardCard(
+                    title: 'Profit/Sales',
+                    value: '\$2,500',
+                    color: Colors.purple.shade400,
+                    onTap: () {
+                      Navigator.pushNamed(context, '/profit_sales');
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
