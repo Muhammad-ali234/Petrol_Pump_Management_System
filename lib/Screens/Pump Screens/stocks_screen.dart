@@ -87,131 +87,154 @@ class _StocksScreenState extends State<StocksScreen> {
             // Responsive UI logic
             if (constraints.maxWidth < 600) {
               // Mobile layout
-              return buildMobileLayout();
+              return buildMobileLayout(context);
             } else {
               // Web layout
-              return buildWebLayout();
+              return buildWebLayout(context);
             }
           },
         ));
   }
 
-  Widget buildWebLayout() {
-    return SingleChildScrollView(
-      child: Row(
-        children: [
-          // Sidebar with fuel type selection
-          SizedBox(
-            width: 200,
+  Widget buildWebLayout(BuildContext context) {
+    return Row(
+      children: [
+        // Sidebar
+        Container(
+          width: 200,
+          color: Colors.grey[200],
+          padding: const EdgeInsets.all(16),
+          child: const Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Menu',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+        // Main Content
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                DropdownButton<String>(
-                  value: selectedFuelType,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedFuelType = value!;
-                    });
-                  },
-                  items: ['Petrol', 'Diesel']
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
+                Card(
+                  elevation: 4,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          'Total Petrol Stock: $petrolStock',
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          'Total Diesel Stock: $dieselStock',
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                TextField(
+                  controller: selectedFuelType == 'Petrol'
+                      ? petrolController
+                      : dieselController,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
+                  decoration:
+                      const InputDecoration(labelText: 'Enter Fuel Amount'),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      onPressed: addToStock,
+                      child: const Text('Add Fuel to Stock'),
+                    ),
+                    DropdownButton<String>(
+                      value: selectedFuelType,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedFuelType = value!;
+                        });
+                      },
+                      items: ['Petrol', 'Diesel']
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                TextField(
+                  controller: pumpReadingController,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
+                  decoration: const InputDecoration(
+                      labelText: 'Enter Pump Reading Amount'),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      onPressed: deductFromStock,
+                      child: const Text('Deduct Pump Reading from Stock'),
+                    ),
+                    DropdownButton<String>(
+                      value: selectedFuelType,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedFuelType = value!;
+                        });
+                      },
+                      items: ['Petrol', 'Diesel']
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Stock History',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: stockHistory.length,
+                    itemBuilder: (context, index) {
+                      return stockHistory[index];
+                    },
+                  ),
                 ),
               ],
             ),
           ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Card(
-                    elevation: 4,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            'Total Petrol Stock: $petrolStock',
-                            style: const TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            'Total Diesel Stock: $dieselStock',
-                            style: const TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  TextField(
-                    controller: selectedFuelType == 'Petrol'
-                        ? petrolController
-                        : dieselController,
-                    keyboardType:
-                        const TextInputType.numberWithOptions(decimal: true),
-                    decoration:
-                        const InputDecoration(labelText: 'Enter Fuel Amount'),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ElevatedButton(
-                        onPressed: addToStock,
-                        child: const Text('Add Fuel to Stock'),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  TextField(
-                    controller: pumpReadingController,
-                    keyboardType:
-                        const TextInputType.numberWithOptions(decimal: true),
-                    decoration: const InputDecoration(
-                        labelText: 'Enter Pump Reading Amount'),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ElevatedButton(
-                        onPressed: deductFromStock,
-                        child: const Text('Deduct Pump Reading from Stock'),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Stock History',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: stockHistory.length,
-                      itemBuilder: (context, index) {
-                        return stockHistory[index];
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
-  Padding buildMobileLayout() {
+  Widget buildMobileLayout(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
