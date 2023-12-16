@@ -83,7 +83,7 @@ class DashboardScreen extends StatelessWidget {
                 'Stocks',
                 'Credit/Debit',
                 'Daily Expense',
-                'Profit/Sales'
+                'Daily Sales'
               ];
               List<String> values = [
                 '100 items',
@@ -109,7 +109,7 @@ class DashboardScreen extends StatelessWidget {
                       Navigator.pushNamed(context, '/daily_expense');
                       break;
                     case 3:
-                      Navigator.pushNamed(context, '/profit_sales');
+                      Navigator.pushNamed(context, '/daily_sales');
                       break;
                   }
                 },

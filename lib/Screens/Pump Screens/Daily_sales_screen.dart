@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:petrol_pump/Screens/Pump%20Screens/add_daily_sale.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
-class ProfitSalesScreen extends StatefulWidget {
-  const ProfitSalesScreen({Key? key}) : super(key: key);
+class DailySalesScreen extends StatefulWidget {
+  const DailySalesScreen({Key? key}) : super(key: key);
 
   @override
-  _ProfitSalesScreenState createState() => _ProfitSalesScreenState();
+  _DailySalesScreenState createState() => _DailySalesScreenState();
 }
 
-class _ProfitSalesScreenState extends State<ProfitSalesScreen> {
+class _DailySalesScreenState extends State<DailySalesScreen> {
   List<PetrolSale> petrolSales = [
     PetrolSale(
       product: 'Petrol 95',
@@ -41,30 +43,115 @@ class _ProfitSalesScreenState extends State<ProfitSalesScreen> {
           ),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const SizedBox(height: 16.0),
-          _buildPetrolSalesList(),
-          const SizedBox(height: 16.0),
-          _buildTotalSalesAndProfit(),
-          const SizedBox(height: 16.0),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const AddPetrolSaleScreen()),
-              ).then((newSale) {
-                if (newSale != null) {
-                  _addPetrolSale(newSale);
-                }
-              });
-            },
-            child: const Text('Add New Petrol Sale'),
-          ),
-        ],
+      body: ResponsiveBuilder(
+        builder: (context, sizingInformation) {
+          if (sizingInformation.isMobile) {
+            return _buildMobileLayout();
+          } else {
+            return _buildWebLayout();
+          }
+        },
       ),
+    );
+  }
+
+  Widget _buildMobileLayout() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const SizedBox(height: 16.0),
+        _buildPetrolSalesList(),
+        const SizedBox(height: 16.0),
+        _buildTotalSalesAndProfit(),
+        const SizedBox(height: 16.0),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const AddPetrolSaleScreen()),
+            ).then((newSale) {
+              if (newSale != null) {
+                _addPetrolSale(newSale);
+              }
+            });
+          },
+          child: const Text('Add New Petrol Sale'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildWebLayout() {
+    return Row(
+      children: [
+        // Sidebar
+        Container(
+          width: 250,
+          color: Colors.blue,
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Menu',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.blue,
+                  backgroundColor: Colors.white,
+                ),
+                child: const Text('Dashboard'),
+              ),
+              ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.blue,
+                  backgroundColor: Colors.white,
+                ),
+                child: const Text('Reports'),
+              ),
+            ],
+          ),
+        ),
+        // Main Content
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: 16.0),
+                _buildPetrolSalesList(),
+                const SizedBox(height: 16.0),
+                _buildTotalSalesAndProfit(),
+                const SizedBox(height: 16.0),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AddPetrolSaleScreen()),
+                    ).then((newSale) {
+                      if (newSale != null) {
+                        _addPetrolSale(newSale);
+                      }
+                    });
+                  },
+                  child: const Text('Add New Petrol Sale'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -207,21 +294,5 @@ class PetrolSale {
 
   double profit() {
     return (unitPrice - costPrice) * quantity;
-  }
-}
-
-class AddPetrolSaleScreen extends StatelessWidget {
-  const AddPetrolSaleScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add New Petrol Sale'),
-      ),
-      body: const Center(
-        child: Text('This is the Add Petrol Sale Screen'),
-      ),
-    );
   }
 }

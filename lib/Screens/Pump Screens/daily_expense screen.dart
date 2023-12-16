@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:petrol_pump/Screens/Pump%20Screens/add_expense%20screen.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-import 'package:flutter/material.dart';
-import 'package:responsive_builder/responsive_builder.dart';
 
 class DailyExpenseScreen extends StatefulWidget {
   const DailyExpenseScreen({Key? key}) : super(key: key);
