@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:petrol_pump/Screens/Pump%20Screens/add_expense%20screen.dart';
+import 'package:responsive_builder/responsive_builder.dart';
+import 'package:flutter/material.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 class DailyExpenseScreen extends StatefulWidget {
   const DailyExpenseScreen({Key? key}) : super(key: key);
@@ -10,15 +14,17 @@ class DailyExpenseScreen extends StatefulWidget {
 class _DailyExpenseScreenState extends State<DailyExpenseScreen> {
   List<Expense> expenses = [
     Expense(
-        name: 'Fuel',
-        amount: 50,
-        date: '2023-01-15',
-        category: ExpenseCategory.transportation),
+      name: 'Fuel',
+      amount: 50,
+      date: '2023-01-15',
+      category: ExpenseCategory.transportation,
+    ),
     Expense(
-        name: 'Food',
-        amount: 30,
-        date: '2023-01-15',
-        category: ExpenseCategory.food),
+      name: 'Food',
+      amount: 30,
+      date: '2023-01-15',
+      category: ExpenseCategory.food,
+    ),
     // Add more expenses as needed
   ];
 
@@ -37,30 +43,125 @@ class _DailyExpenseScreenState extends State<DailyExpenseScreen> {
           ),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const SizedBox(height: 16.0),
-          _buildExpenseList(),
-          const SizedBox(height: 16.0),
-          _buildTotalExpense(),
-          const SizedBox(height: 16.0),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const AddExpenseScreen()),
-              ).then((newExpense) {
-                if (newExpense != null) {
-                  _addExpense(newExpense);
-                }
-              });
-            },
-            child: const Text('Add New Expense'),
-          ),
-        ],
+      body: ResponsiveBuilder(
+        builder: (context, sizingInformation) {
+          if (sizingInformation.isMobile) {
+            return _buildMobileLayout();
+          } else {
+            return _buildWebLayout();
+          }
+        },
       ),
+    );
+  }
+
+  Widget _buildMobileLayout() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const SizedBox(height: 16.0),
+        _buildExpenseList(),
+        const SizedBox(height: 16.0),
+        _buildTotalExpense(),
+        const SizedBox(height: 16.0),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AddExpenseScreen(),
+              ),
+            ).then((newExpense) {
+              if (newExpense != null) {
+                _addExpense(newExpense);
+              }
+            });
+          },
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.blue,
+          ),
+          child: const Text('Add New Expense'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildWebLayout() {
+    return Row(
+      children: [
+        // Sidebar
+        Container(
+          width: 250,
+          color: Colors.blue,
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Menu',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.blue,
+                  backgroundColor: Colors.white,
+                ),
+                child: const Text('Dashboard'),
+              ),
+              ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.blue,
+                  backgroundColor: Colors.white,
+                ),
+                child: const Text('Reports'),
+              ),
+            ],
+          ),
+        ),
+        // Main Content
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: 16.0),
+                _buildExpenseList(),
+                const SizedBox(height: 16.0),
+                _buildTotalExpense(),
+                const SizedBox(height: 16.0),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AddExpenseScreen(),
+                      ),
+                    ).then((newExpense) {
+                      if (newExpense != null) {
+                        _addExpense(newExpense);
+                      }
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.blue,
+                  ),
+                  child: const Text('Add New Expense'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -97,7 +198,7 @@ class _DailyExpenseScreenState extends State<DailyExpenseScreen> {
         children: [
           const Text(
             'Total Expense',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
           const SizedBox(height: 8.0),
           Text(
@@ -191,27 +292,12 @@ class Expense {
   final String date;
   final ExpenseCategory category;
 
-  Expense(
-      {required this.name,
-      required this.amount,
-      required this.date,
-      required this.category});
+  Expense({
+    required this.name,
+    required this.amount,
+    required this.date,
+    required this.category,
+  });
 }
 
 enum ExpenseCategory { food, transportation, other }
-
-class AddExpenseScreen extends StatelessWidget {
-  const AddExpenseScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add New Expense'),
-      ),
-      body: const Center(
-        child: Text('This is the Add Expense Screen'),
-      ),
-    );
-  }
-}

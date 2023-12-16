@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:petrol_pump/Screens/Pump%20Screens/credit_debit_screen.dart';
 import 'package:petrol_pump/Screens/Pump%20Screens/daily_expense%20screen.dart';
 import 'package:petrol_pump/Screens/Pump%20Screens/login_screen.dart';
+import 'package:petrol_pump/Screens/Pump%20Screens/profit_sales_screen.dart';
 import 'package:petrol_pump/Screens/Pump%20Screens/pump_dashboared_screen.dart';
 
 import 'package:petrol_pump/Screens/Pump%20Screens/stocks_screen.dart';
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
         '/stock': (context) => const StocksScreen(),
         '/credit_debit': (context) => const CreditDebitScreen(),
         '/daily_expense': (context) => const DailyExpenseScreen(),
-        //'/profit_sales': (context) =>  ProfitSalesScreen(petrolLiterPrice: null,),
+        '/profit_sales': (context) => const ProfitSalesScreen(),
       },
     );
   }
