@@ -248,7 +248,9 @@ class TransactionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.orange[400],
+      color: transaction.type == TransactionType.credit
+          ? Colors.green[100]
+          : Colors.red[100],
       margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       elevation: 4.0,
       child: ListTile(
@@ -256,10 +258,12 @@ class TransactionCard extends StatelessWidget {
         title: Text(
           transaction.type == TransactionType.credit ? 'Credit' : 'Debit',
           style: TextStyle(
-              color: transaction.type == TransactionType.credit
-                  ? Colors.green
-                  : Colors.red,
-              fontSize: 20),
+            color: transaction.type == TransactionType.credit
+                ? Colors.green
+                : Colors.red,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
