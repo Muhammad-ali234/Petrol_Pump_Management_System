@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class StocksScreen extends StatefulWidget {
-  const StocksScreen({super.key});
+  const StocksScreen({Key? key}) : super(key: key);
 
   @override
   _StocksScreenState createState() => _StocksScreenState();
@@ -32,8 +32,11 @@ class _StocksScreenState extends State<StocksScreen> {
         dieselStock += amount;
       }
 
-      stockHistory
-          .add(StockHistoryItem(type: selectedFuelType, amount: amount));
+      stockHistory.add(StockHistoryItem(
+        type: selectedFuelType,
+        amount: amount,
+        timestamp: null,
+      ));
     });
 
     // Clear the text fields after updating the stock.
@@ -59,8 +62,13 @@ class _StocksScreenState extends State<StocksScreen> {
         dieselStock -= pumpReading;
       }
 
-      stockHistory.add(StockHistoryItem(
-          type: '$selectedFuelType Pump Reading', amount: pumpReading));
+      stockHistory.add(
+        StockHistoryItem(
+          type: '$selectedFuelType Pump Reading',
+          amount: pumpReading,
+          timestamp: DateTime.now(),
+        ),
+      );
     });
 
     // Clear the text field after updating the stock.
@@ -79,21 +87,22 @@ class _StocksScreenState extends State<StocksScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Petrol Diesel Stock'),
-        ),
-        body: LayoutBuilder(
-          builder: (context, constraints) {
-            // Responsive UI logic
-            if (constraints.maxWidth < 600) {
-              // Mobile layout
-              return buildMobileLayout(context);
-            } else {
-              // Web layout
-              return buildWebLayout(context);
-            }
-          },
-        ));
+      appBar: AppBar(
+        title: const Text('Petrol Diesel Stock'),
+      ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          // Responsive UI logic
+          if (constraints.maxWidth < 600) {
+            // Mobile layout
+            return buildMobileLayout(context);
+          } else {
+            // Web layout
+            return buildWebLayout(context);
+          }
+        },
+      ),
+    );
   }
 
   Widget buildWebLayout(BuildContext context) {
@@ -101,18 +110,32 @@ class _StocksScreenState extends State<StocksScreen> {
       children: [
         // Sidebar
         Container(
-          width: 200,
-          color: Colors.grey[200],
+          width: 250,
+          color: Colors.blue,
           padding: const EdgeInsets.all(16),
-          child: const Column(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Menu',
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/dashboardScreen');
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 25.0, horizontal: 50),
+                  foregroundColor: Colors.blue,
+                  backgroundColor: Colors.white,
+                ),
+                child: const Text('Dashboard'),
               ),
             ],
           ),
@@ -214,17 +237,17 @@ class _StocksScreenState extends State<StocksScreen> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                const Text(
-                  'Stock History',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: stockHistory.length,
-                    itemBuilder: (context, index) {
-                      return stockHistory[index];
-                    },
-                  ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            StockHistoryScreen(stockHistory: stockHistory),
+                      ),
+                    );
+                  },
+                  child: const Text('View Stock History'),
                 ),
               ],
             ),
@@ -327,17 +350,17 @@ class _StocksScreenState extends State<StocksScreen> {
             ],
           ),
           const SizedBox(height: 20),
-          const Text(
-            'Stock History',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: stockHistory.length,
-              itemBuilder: (context, index) {
-                return stockHistory[index];
-              },
-            ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      StockHistoryScreen(stockHistory: stockHistory),
+                ),
+              );
+            },
+            child: const Text('View Stock History'),
           ),
         ],
       ),
@@ -348,8 +371,14 @@ class _StocksScreenState extends State<StocksScreen> {
 class StockHistoryItem extends StatelessWidget {
   final String type;
   final double amount;
+  final DateTime? timestamp;
 
-  const StockHistoryItem({super.key, required this.type, required this.amount});
+  const StockHistoryItem({
+    Key? key,
+    required this.type,
+    required this.amount,
+    this.timestamp,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -357,7 +386,29 @@ class StockHistoryItem extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: ListTile(
         title: Text('$type: $amount'),
-        subtitle: Text('Updated on ${DateTime.now().toString()}'),
+        subtitle: Text('Updated on ${timestamp.toString()}'),
+      ),
+    );
+  }
+}
+
+class StockHistoryScreen extends StatelessWidget {
+  final List<StockHistoryItem> stockHistory;
+
+  const StockHistoryScreen({Key? key, required this.stockHistory})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Stock History'),
+      ),
+      body: ListView.builder(
+        itemCount: stockHistory.length,
+        itemBuilder: (context, index) {
+          return stockHistory[index];
+        },
       ),
     );
   }

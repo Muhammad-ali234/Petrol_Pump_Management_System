@@ -80,6 +80,40 @@ class _CreditDebitScreenState extends State<CreditDebitScreen> {
           ),
           child: const Text('Add New Transaction'),
         ),
+        ElevatedButton(
+          onPressed: () {
+            // Navigate to All Credits Screen
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    AllCreditsScreen(transactions: transactions),
+              ),
+            );
+          },
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.green,
+          ),
+          child: const Text('All Credits'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            // Navigate to All Debits Screen
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    AllDebitsScreen(transactions: transactions),
+              ),
+            );
+          },
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.red,
+          ),
+          child: const Text('All Debits'),
+        ),
       ],
     );
   }
@@ -103,22 +137,58 @@ class _CreditDebitScreenState extends State<CreditDebitScreen> {
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, '/dashboardScreen');
+                },
                 style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 25.0, horizontal: 50),
                   foregroundColor: Colors.blue,
                   backgroundColor: Colors.white,
                 ),
                 child: const Text('Dashboard'),
               ),
+              const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  // Navigate to All Credits Screen
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          AllCreditsScreen(transactions: transactions),
+                    ),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.blue,
-                  backgroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 25.0, horizontal: 50),
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.green,
                 ),
-                child: const Text('Reports'),
+                child: const Text('All Credits'),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  // Navigate to All Debits Screen
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          AllDebitsScreen(transactions: transactions),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 25.0, horizontal: 50),
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.red,
+                ),
+                child: const Text('All Debits'),
               ),
             ],
           ),
@@ -234,6 +304,72 @@ class _CreditDebitScreenState extends State<CreditDebitScreen> {
     setState(() {
       transactions.removeAt(index);
     });
+  }
+}
+
+class AllCreditsScreen extends StatelessWidget {
+  final List<Transaction> transactions;
+
+  const AllCreditsScreen({Key? key, required this.transactions})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    List<Transaction> creditTransactions = transactions
+        .where((transaction) => transaction.type == TransactionType.credit)
+        .toList();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('All Credits'),
+      ),
+      body: creditTransactions.isEmpty
+          ? const Center(
+              child: Text('No credit transactions available.'),
+            )
+          : ListView.builder(
+              itemCount: creditTransactions.length,
+              itemBuilder: (context, index) {
+                return TransactionCard(
+                  transaction: creditTransactions[index],
+                  onDelete: () {},
+                );
+              },
+            ),
+    );
+  }
+}
+
+class AllDebitsScreen extends StatelessWidget {
+  final List<Transaction> transactions;
+
+  const AllDebitsScreen({Key? key, required this.transactions})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    List<Transaction> debitTransactions = transactions
+        .where((transaction) => transaction.type == TransactionType.debit)
+        .toList();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('All Debits'),
+      ),
+      body: debitTransactions.isEmpty
+          ? const Center(
+              child: Text('No debit transactions available.'),
+            )
+          : ListView.builder(
+              itemCount: debitTransactions.length,
+              itemBuilder: (context, index) {
+                return TransactionCard(
+                  transaction: debitTransactions[index],
+                  onDelete: () {},
+                );
+              },
+            ),
+    );
   }
 }
 
