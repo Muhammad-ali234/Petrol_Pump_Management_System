@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:petrol_pump/Screens/Pump%20Screens/stocks_screen.dart';
+import 'package:petrol_pump/Pump/Stocks/Widget/stock_histryitem.dart';
+
+import '../Models/stock_histry_Item.dart';
 
 class StockHistoryScreen extends StatelessWidget {
   final List<StockHistoryItem> stockHistory;
 
-  const StockHistoryScreen({Key? key, required this.stockHistory})
+  const StockHistoryScreen(
+      {Key? key, required this.stockHistory, required String historyType})
       : super(key: key);
 
   @override
@@ -86,7 +89,9 @@ class StockHistoryScreen extends StatelessWidget {
                       child: ListView.builder(
                         itemCount: stockHistory.length,
                         itemBuilder: (context, index) {
-                          return stockHistory[index];
+                          return StockHistoryItemWidget(
+                            historyItem: stockHistory[index],
+                          );
                         },
                       ),
                     ),
@@ -122,7 +127,9 @@ class StockHistoryScreen extends StatelessWidget {
                 child: ListView.builder(
                   itemCount: stockHistory.length,
                   itemBuilder: (context, index) {
-                    return stockHistory[index];
+                    return StockHistoryItemWidget(
+                      historyItem: stockHistory[index],
+                    );
                   },
                 ),
               ),

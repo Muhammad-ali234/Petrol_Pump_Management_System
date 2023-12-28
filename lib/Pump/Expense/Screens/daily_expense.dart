@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:petrol_pump/Screens/Pump%20Screens/add_expense%20screen.dart';
+import 'package:petrol_pump/Pump/Expense/Screens/add_expense.dart';
+import 'package:petrol_pump/Pump/common/widgets/sidebar.dart';
 import 'package:responsive_builder/responsive_builder.dart';
+
+import '../../common/models/sidebar.dart';
 
 class DailyExpenseScreen extends StatefulWidget {
   const DailyExpenseScreen({Key? key}) : super(key: key);
@@ -91,36 +94,60 @@ class _DailyExpenseScreenState extends State<DailyExpenseScreen> {
         // Sidebar
         Container(
           width: 250,
-          color: Colors.blue,
+          decoration: BoxDecoration(
+            color: Colors.blue,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 10,
+                offset: const Offset(0, 0),
+              ),
+            ],
+            gradient: const LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.blue, Colors.indigo],
+            ),
+          ),
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const CircleAvatar(
+                radius: 40,
+                backgroundColor: Colors.white,
+                child: Icon(
+                  Icons.account_circle,
+                  size: 60,
+                  color: Colors.blue,
+                ),
+              ),
+              const SizedBox(height: 10),
               const Text(
-                'Menu',
+                'Petrol Station 1',
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.blue,
-                  backgroundColor: Colors.white,
+              const SizedBox(height: 20),
+              SidebarMenuItem(
+                  item: SidebarMenuItemModel(
+                icon: Icons.dashboard,
+                title: 'Dashboard',
+                onTap: () {
+                  Navigator.pushNamed(context, '/dashboardScreen');
+                },
+              )),
+              SidebarMenuItem(
+                item: SidebarMenuItemModel(
+                  icon: Icons.money_off,
+                  title: 'Total Expense Today',
+                  onTap: () {},
                 ),
-                child: const Text('Dashboard'),
               ),
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.blue,
-                  backgroundColor: Colors.white,
-                ),
-                child: const Text('Reports'),
-              ),
+              // Add more menu items as needed
             ],
           ),
         ),

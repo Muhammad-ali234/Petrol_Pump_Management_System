@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import '../../common/models/drawer_item.dart';
+import '../../common/models/sidebar.dart';
+import '../../common/screens/app_drawer.dart';
+import '../../common/widgets/sidebar.dart';
+import 'view_stock_histry.dart';
+import '../Models/stock_histry_Item.dart';
 
 class StocksScreen extends StatefulWidget {
   const StocksScreen({Key? key}) : super(key: key);
@@ -33,9 +39,9 @@ class _StocksScreenState extends State<StocksScreen> {
       }
 
       stockHistory.add(StockHistoryItem(
-        type: selectedFuelType,
+        type: '$selectedFuelType Stock',
         amount: amount,
-        timestamp: null,
+        timestamp: DateTime.now(),
       ));
     });
 
@@ -90,6 +96,29 @@ class _StocksScreenState extends State<StocksScreen> {
       appBar: AppBar(
         title: const Text('Petrol Diesel Stock'),
       ),
+      drawer: MediaQuery.of(context).size.width < 600
+          ? AppDrawer(
+              username: 'John Doe',
+              drawerItems: [
+                DrawerItem(
+                  icon: Icons.dashboard,
+                  title: 'Dashboard',
+                  onTap: () {
+                    Navigator.pushNamed(context, '/dashboardScreen');
+                    Navigator.pop(context); // Close the drawer
+                  },
+                ),
+                DrawerItem(
+                  icon: Icons.local_gas_station,
+                  title: 'Fuel Stock',
+                  onTap: () {
+                    // Handle navigation to fuel stock screen
+                  },
+                ),
+                // Add more drawer items as needed
+              ],
+            )
+          : null,
       body: LayoutBuilder(
         builder: (context, constraints) {
           // Responsive UI logic
@@ -108,35 +137,66 @@ class _StocksScreenState extends State<StocksScreen> {
   Widget buildWebLayout(BuildContext context) {
     return Row(
       children: [
-        // Sidebar
         Container(
           width: 250,
-          color: Colors.blue,
+          decoration: BoxDecoration(
+            color: Colors.blue,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 10,
+                offset: const Offset(0, 0),
+              ),
+            ],
+            gradient: const LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.blue, Colors.indigo],
+            ),
+          ),
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const CircleAvatar(
+                radius: 40,
+                backgroundColor: Colors.white,
+                child: Icon(
+                  Icons.account_circle,
+                  size: 60,
+                  color: Colors.blue,
+                ),
+              ),
+              const SizedBox(height: 10),
               const Text(
-                'Menu',
+                'Petrol Station 1',
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/dashboardScreen');
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 25.0, horizontal: 50),
-                  foregroundColor: Colors.blue,
-                  backgroundColor: Colors.white,
+              SidebarMenuItem(
+                item: SidebarMenuItemModel(
+                  icon: Icons
+                      .dashboard, // Example icon, replace with the actual icon
+                  title: 'Dashboard',
+                  onTap: () {
+                    Navigator.pushNamed(context, '/dashboardScreen');
+                  },
                 ),
-                child: const Text('Dashboard'),
               ),
+
+              SidebarMenuItem(
+                  item: SidebarMenuItemModel(
+                icon: Icons.local_gas_station,
+                title: 'Fuel Stock',
+                onTap: () {
+                  // Handle navigation to fuel stock screen
+                },
+              )),
+              // Add more menu items as needed
             ],
           ),
         ),
@@ -148,7 +208,10 @@ class _StocksScreenState extends State<StocksScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Card(
-                  elevation: 4,
+                  elevation: 8,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
@@ -157,12 +220,13 @@ class _StocksScreenState extends State<StocksScreen> {
                         Text(
                           'Total Petrol Stock: $petrolStock',
                           style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                              fontSize: 20, fontWeight: FontWeight.bold),
                         ),
+                        const SizedBox(height: 10),
                         Text(
                           'Total Diesel Stock: $dieselStock',
                           style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                              fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -175,8 +239,12 @@ class _StocksScreenState extends State<StocksScreen> {
                       : dieselController,
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
-                  decoration:
-                      const InputDecoration(labelText: 'Enter Fuel Amount'),
+                  decoration: InputDecoration(
+                    labelText: 'Enter Fuel Amount',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 20),
                 Row(
@@ -184,40 +252,20 @@ class _StocksScreenState extends State<StocksScreen> {
                   children: [
                     ElevatedButton(
                       onPressed: addToStock,
-                      child: const Text('Add Fuel to Stock'),
-                    ),
-                    DropdownButton<String>(
-                      value: selectedFuelType,
-                      onChanged: (value) {
-                        setState(() {
-                          selectedFuelType = value!;
-                        });
-                      },
-                      items: ['Petrol', 'Diesel']
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: pumpReadingController,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(
-                      labelText: 'Enter Pump Reading Amount'),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton(
-                      onPressed: deductFromStock,
-                      child: const Text('Deduct Pump Reading from Stock'),
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                      child: const Text(
+                        'Add Fuel to Stock',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                     DropdownButton<String>(
                       value: selectedFuelType,
@@ -242,12 +290,105 @@ class _StocksScreenState extends State<StocksScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            StockHistoryScreen(stockHistory: stockHistory),
+                        builder: (context) => StockHistoryScreen(
+                          stockHistory: stockHistory,
+                          historyType: 'Stock',
+                        ),
                       ),
                     );
                   },
-                  child: const Text('View Stock History'),
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
+                  child: const Text(
+                    'View Stock History',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                TextField(
+                  controller: pumpReadingController,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
+                  decoration: InputDecoration(
+                    labelText: 'Enter Meter Reading',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      onPressed: deductFromStock,
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                      child: const Text(
+                        'Deduct Pump Reading from Stock',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    DropdownButton<String>(
+                      value: selectedFuelType,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedFuelType = value!;
+                        });
+                      },
+                      items: ['Petrol', 'Diesel']
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => StockHistoryScreen(
+                          stockHistory: stockHistory,
+                          historyType: 'Pump Reading',
+                        ),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
+                  child: const Text(
+                    'View Pump Reading History',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -318,11 +459,38 @@ class _StocksScreenState extends State<StocksScreen> {
             ],
           ),
           const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => StockHistoryScreen(
+                    stockHistory: stockHistory,
+                    historyType: 'Stock', // or any meaningful string
+                  ),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white,
+              backgroundColor: Colors.blue,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+            child: const Text(
+              'View Stock History',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
           TextField(
             controller: pumpReadingController,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration:
-                const InputDecoration(labelText: 'Enter Pump Reading Amount'),
+            decoration: const InputDecoration(labelText: 'Enter Meter Reading'),
           ),
           const SizedBox(height: 20),
           Row(
@@ -351,16 +519,25 @@ class _StocksScreenState extends State<StocksScreen> {
           ),
           const SizedBox(height: 20),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white,
+              backgroundColor: Colors.blue,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
             onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      StockHistoryScreen(stockHistory: stockHistory),
+                  builder: (context) => StockHistoryScreen(
+                    stockHistory: stockHistory,
+                    historyType: 'Pump Reading', // or any meaningful string
+                  ),
                 ),
               );
             },
-            child: const Text('View Stock History'),
+            child: const Text('View Pump Reading History'),
           ),
         ],
       ),
@@ -368,48 +545,29 @@ class _StocksScreenState extends State<StocksScreen> {
   }
 }
 
-class StockHistoryItem extends StatelessWidget {
-  final String type;
-  final double amount;
-  final DateTime? timestamp;
+// class StockHistoryItem extends StatelessWidget {
+//   final String type;
+//   final double amount;
+//   final DateTime? timestamp;
 
-  const StockHistoryItem({
-    Key? key,
-    required this.type,
-    required this.amount,
-    this.timestamp,
-  }) : super(key: key);
+//   const StockHistoryItem({
+//     Key? key,
+//     required this.type,
+//     required this.amount,
+//     this.timestamp,
+//   }) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: ListTile(
-        title: Text('$type: $amount'),
-        subtitle: Text('Updated on ${timestamp.toString()}'),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Card(
+//       margin: const EdgeInsets.symmetric(vertical: 8),
+//       child: ListTile(
+//         title: Text('$type: $amount'),
+//         subtitle: Text('Updated on ${timestamp.toString()}'),
+//       ),
+//     );
+//   }
+// }
 
-class StockHistoryScreen extends StatelessWidget {
-  final List<StockHistoryItem> stockHistory;
 
-  const StockHistoryScreen({Key? key, required this.stockHistory})
-      : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Stock History'),
-      ),
-      body: ListView.builder(
-        itemCount: stockHistory.length,
-        itemBuilder: (context, index) {
-          return stockHistory[index];
-        },
-      ),
-    );
-  }
-}

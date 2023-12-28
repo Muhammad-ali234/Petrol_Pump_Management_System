@@ -83,7 +83,7 @@ class DashboardScreen extends StatelessWidget {
                 'Stocks',
                 'Credit/Debit',
                 'Daily Expense',
-                'Daily Sales'
+                'Daily Overview'
               ];
               List<String> values = [
                 '100 items',
@@ -103,13 +103,14 @@ class DashboardScreen extends StatelessWidget {
                       Navigator.pushNamed(context, '/stock');
                       break;
                     case 1:
-                      Navigator.pushNamed(context, '/credit_debit');
+                      // Navigator.pushNamed(context, '/credit_debit');
+                      Navigator.pushNamed(context, '/userscreen');
                       break;
                     case 2:
                       Navigator.pushNamed(context, '/daily_expense');
                       break;
                     case 3:
-                      Navigator.pushNamed(context, '/daily_sales');
+                      Navigator.pushNamed(context, '/daily_overview');
                       break;
                   }
                 },
@@ -190,7 +191,7 @@ class DashboardScreen extends StatelessWidget {
               value: '\$5,000',
               color: Colors.green.shade400,
               onTap: () {
-                Navigator.pushNamed(context, '/credit_debit');
+                Navigator.pushNamed(context, '/userscreen');
               },
             ),
             AnimatedDashboardCard(
@@ -202,11 +203,11 @@ class DashboardScreen extends StatelessWidget {
               },
             ),
             AnimatedDashboardCard(
-              title: 'Profit/Sales',
+              title: 'Daily Overview',
               value: '\$2,500',
               color: Colors.purple.shade400,
               onTap: () {
-                Navigator.pushNamed(context, '/profit_sales');
+                Navigator.pushNamed(context, '/daily_overview');
               },
             ),
           ],
