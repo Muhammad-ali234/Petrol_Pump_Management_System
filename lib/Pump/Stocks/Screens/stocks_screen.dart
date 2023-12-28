@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:petrol_pump/Pump/Stocks/Screens/stock_histry.dart';
 import '../../common/models/drawer_item.dart';
 import '../../common/models/sidebar.dart';
 import '../../common/screens/app_drawer.dart';
 import '../../common/widgets/sidebar.dart';
-import 'view_stock_histry.dart';
 import '../Models/stock_histry_Item.dart';
 
 class StocksScreen extends StatefulWidget {

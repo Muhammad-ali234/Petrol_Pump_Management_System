@@ -1,4 +1,4 @@
-// stock_history_item.dart
+import 'package:flutter/material.dart';
 
 class StockHistoryItem {
   final String type;

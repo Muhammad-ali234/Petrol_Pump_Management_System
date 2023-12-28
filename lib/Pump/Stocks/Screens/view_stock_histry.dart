@@ -5,33 +5,38 @@ import '../Models/stock_histry_Item.dart';
 
 class StockHistoryScreen extends StatelessWidget {
   final List<StockHistoryItem> stockHistory;
+  final String historyType;
 
   const StockHistoryScreen(
-      {Key? key, required this.stockHistory, required String historyType})
+      {Key? key, required this.stockHistory, required this.historyType})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    List<StockHistoryItem> filteredHistory = stockHistory
+        .where((item) => item.type.toLowerCase() == historyType.toLowerCase())
+        .toList();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Stock History'),
+        title: Text('$historyType History'),
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           // Responsive UI logic
           if (constraints.maxWidth < 600) {
             // Mobile layout
-            return buildMobileLayout();
+            return buildMobileLayout(filteredHistory);
           } else {
             // Web layout
-            return buildWebLayout(context);
+            return buildWebLayout(context, filteredHistory);
           }
         },
       ),
     );
   }
 
-  Widget buildWebLayout(BuildContext context) {
+  Widget buildWebLayout(
+      BuildContext context, List<StockHistoryItem> filteredHistory) {
     return Row(
       children: [
         // Sidebar
@@ -87,10 +92,10 @@ class StockHistoryScreen extends StatelessWidget {
                     const SizedBox(height: 20),
                     Expanded(
                       child: ListView.builder(
-                        itemCount: stockHistory.length,
+                        itemCount: filteredHistory.length,
                         itemBuilder: (context, index) {
                           return StockHistoryItemWidget(
-                            historyItem: stockHistory[index],
+                            historyItem: filteredHistory[index],
                           );
                         },
                       ),
@@ -105,7 +110,7 @@ class StockHistoryScreen extends StatelessWidget {
     );
   }
 
-  Widget buildMobileLayout() {
+  Widget buildMobileLayout(List<StockHistoryItem> filteredHistory) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Card(
@@ -125,10 +130,10 @@ class StockHistoryScreen extends StatelessWidget {
               const SizedBox(height: 20),
               Expanded(
                 child: ListView.builder(
-                  itemCount: stockHistory.length,
+                  itemCount: filteredHistory.length,
                   itemBuilder: (context, index) {
                     return StockHistoryItemWidget(
-                      historyItem: stockHistory[index],
+                      historyItem: filteredHistory[index],
                     );
                   },
                 ),
